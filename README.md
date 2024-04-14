@@ -30,24 +30,25 @@ Things you may want to cover:
     * check code coverage using below cmd
       * open coverage/index.html
 
-* Services (job queues, cache servers, search engines, etc.)
-  * GameDependenciesBuildJob
-
 * ...
+# Requirement
+  * Imagine that a bowling house will use this API. On the screen, the user starts the game. Then, after each throw, the machine counts how many pins were dropped and calls the API to send this information. In the meantime, the screen is constant.(For example: every 2 seconds) querying the API for the game score and displaying it. Be tolerant of application restarts.
 
 # API flow
   <!-- − Start a new bowling game. -->
   * Create Game using GamesController Post API
-   * should give { no_of_players, player_names } in params
-   * After Game save it will perform GameDependenciesBuildJob
-      * using this job will create 10 frames for each players
+   * Client should provide { no_of_players, player_names } as a Request paramteres
+   * Once Game is created it will perform GameDependenciesBuildJob
+      * Players will be created according to given names in player_names request params
+      * using this job 10 frames will be created for each player
 
   <!-- − Input the number of pins knocked down by each ball. -->
   * Frame can be update after each throw using FramesController#update API
     * FrameValidator used to validate required params to update Frame
-        * { player_id, throw, pins_knocked_down_by_first_throw pins_knocked_down_by_second_throw bonus_throw_pins } params used for each request based on throw will decide what value need to pass to update frame
+        * { player_id, throw, pins_knocked_down_by_first_throw pins_knocked_down_by_second_throw bonus_throw_pins } params used for each request,
+        * Request parameters decision will be taken based on the throw number.
 
   <!-- Output the current game score (which consists of the score for each frame and total score). -->
-  # Game Show API
-    * To get information about all players total score with each frame score as well 
+  * Game Show API
+    * To get information about current score of all the players in the current game.
             
