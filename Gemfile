@@ -12,10 +12,13 @@ gem "pg", "~> 1.1"
 gem "puma", ">= 5.0"
 
 # Build JSON APIs with ease [https://github.com/rails/jbuilder]
-# gem "jbuilder"
+gem "jbuilder"
 
 # Use Redis adapter to run Action Cable in production
 # gem "redis", ">= 4.0.1"
+
+# Use a real queuing backend for Active Job (and separate queues per environment)
+gem 'resque'
 
 # Use Kredis to get higher-level data types in Redis [https://github.com/rails/kredis]
 # gem "kredis"
@@ -36,12 +39,22 @@ gem "bootsnap", require: false
 # gem "rack-cors"
 
 group :development, :test do
+  gem 'byebug', platforms: %i[mri mingw x64_mingw]
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem "debug", platforms: %i[ mri mswin mswin64 mingw x64_mingw ]
+
+  # RSpec is a testing tool for Ruby, created for behavior-driven development (BDD)
+  gem 'rspec-rails', '~> 6.1.0'
+  gem 'rails-controller-testing'
+
+  # factory_bot_rails provides Rails integration for factory_bot.
+  gem 'factory_bot_rails'
 end
+
+# Used for Code Coverage for Ruby
+gem 'simplecov', require: false, group: :test
 
 group :development do
   # Speed up commands on slow machines / big apps [https://github.com/rails/spring]
   # gem "spring"
 end
-

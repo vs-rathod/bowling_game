@@ -18,6 +18,9 @@
 # Ignore storage (uploaded files in development and any SQLite databases).
 /storage/*
 
+# Ignore Coverage files (Coverage files in development).
+/coverage/*
+
 # Ignore master key for decrypting credentials and more.
 /config/master.key
 
