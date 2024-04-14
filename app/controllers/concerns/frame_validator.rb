@@ -76,12 +76,16 @@ module FrameValidator
 
     def validate_second_throw_frame
       raise ActionController::BadRequest, "pins_knocked_down_by_second_throw is already present" unless @frame.pins_knocked_down_by_second_throw.nil?
-      raise ActionController::BadRequest, "frame status is #{frame.status}: So this operation is not allowed" unless @frame.open?
+      raise ActionController::BadRequest, "frame status is #{@frame.status}: So this operation is not allowed" unless @frame.open?
+      return if @frame.frame_number == 10
+
+      remaining_pins = 10 - @frame.pins_knocked_down_by_first_throw
+      raise ActionController::BadRequest, "pins_knocked_down_by_second_throw value must be between 0 to #{remaining_pins}" unless (0..remaining_pins).include?(params[:pins_knocked_down_by_second_throw])
     end
 
     def validate_bonus_throw_frame
       raise ActionController::BadRequest, "bonus_throw_pins is already present" unless @frame.bonus_throw_pins.nil?
-      raise ActionController::BadRequest, "frame status is #{frame.status}: So this operation is not allowed" unless @frame.open?
+      raise ActionController::BadRequest, "frame status is #{@frame.status}: So this operation is not allowed" unless @frame.open?
     end
 
     def validate_previous_frame

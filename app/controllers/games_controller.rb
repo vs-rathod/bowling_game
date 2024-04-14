@@ -41,7 +41,7 @@ class GamesController < ApplicationController
     return if params[:player_names].class == Array && params[:player_names]&.uniq&.count == params[:no_of_players]
 
     raise ActionController::BadRequest, "player_names must be present" if params[:player_names].blank?
-    raise ActionController::BadRequest, "required [] of player_names " if params[:player_names].class == Array
+    raise ActionController::BadRequest, "required [] of player_names " unless params[:player_names].class == Array
 
     raise ActionController::BadRequest, "no_of_players value and count of player_names should be same"
   end
