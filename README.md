@@ -23,7 +23,7 @@ Things you may want to cover:
 
 
 * How to run the test suite
-  # Rspec tool used for testing, Use below cmd to run rspec test suites
+  * Rspec tool used for testing, Use below cmd to run rspec test suites
     * bundle exec rspec <!-- Run all test cases. -->
     * bundle exec rspec spec/requests/games_spec.rb <!-- Run all test cases for single file. -->
 
@@ -31,19 +31,19 @@ Things you may want to cover:
       * open coverage/index.html
 
 * Services (job queues, cache servers, search engines, etc.)
-  # GameDependenciesBuildJob
+  * GameDependenciesBuildJob
 
 * ...
 
 # API flow
   <!-- − Start a new bowling game. -->
-  # Create Game using GamesController Post API
+  * Create Game using GamesController Post API
    * should give { no_of_players, player_names } in params
    * After Game save it will perform GameDependenciesBuildJob
       * using this job will create 10 frames for each players
 
   <!-- − Input the number of pins knocked down by each ball. -->
-  # Frame can be update after each throw using FramesController#update API
+  * Frame can be update after each throw using FramesController#update API
     * FrameValidator used to validate required params to update Frame
         * { player_id, throw, pins_knocked_down_by_first_throw pins_knocked_down_by_second_throw bonus_throw_pins } params used for each request based on throw will decide what value need to pass to update frame
 
