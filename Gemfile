@@ -46,6 +46,7 @@ group :development, :test do
   # RSpec is a testing tool for Ruby, created for behavior-driven development (BDD)
   gem 'rspec-rails', '~> 6.1.0'
   gem 'rails-controller-testing'
+  gem 'shoulda-matchers', '~> 5.0'
 
   # factory_bot_rails provides Rails integration for factory_bot.
   gem 'factory_bot_rails'
