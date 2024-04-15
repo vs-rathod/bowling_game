@@ -5,12 +5,14 @@ module FrameValidator
 
     private
 
+    # Validates all request parameter combinations
     def validate_params
       validate_player
       validate_throw
       validate_frame
     end
 
+    # Validates player ID presence and existence.
     def validate_player
       player_id = params[:player_id]
       raise ActionController::BadRequest, "Player ID must be present" if player_id.blank?
@@ -21,6 +23,7 @@ module FrameValidator
       raise ActionController::BadRequest, "FrameID and PlayerID are not matching, Please Check!" if @frame.player_id != player.id
     end
 
+    # Validates throw existence, type, and value range.
     def validate_throw
       throw_value = params[:throw]
       raise ActionController::BadRequest, "throw must be present" if throw_value.blank?
@@ -36,6 +39,7 @@ module FrameValidator
       end
     end
 
+    # Validates parameters for the first throw.
     def validate_first_throw_params
       raise ActionController::BadRequest, "pins_knocked_down_by_first_throw must be present" if params[:pins_knocked_down_by_first_throw].nil?
       raise ActionController::BadRequest, "pins_knocked_down_by_first_throw value must be between 0 to 10" unless (0..10).include?(params[:pins_knocked_down_by_first_throw])
@@ -43,6 +47,7 @@ module FrameValidator
       raise ActionController::BadRequest, "bonus_throw_pins should not be present" if params[:bonus_throw_pins].present?
     end
 
+    # Validates parameters for the second throw.
     def validate_second_throw_params
       raise ActionController::BadRequest, "pins_knocked_down_by_second_throw must be present" if params[:pins_knocked_down_by_second_throw].nil?
       raise ActionController::BadRequest, "pins_knocked_down_by_second_throw value must be between 0 to 10" unless (0..10).include?(params[:pins_knocked_down_by_second_throw])
@@ -50,6 +55,7 @@ module FrameValidator
       raise ActionController::BadRequest, "bonus_throw_pins should not be present" if params[:bonus_throw_pins].present?
     end
 
+    # Validates parameters for the bonus throw for last frame (frame number 10)
     def validate_bonus_throw_params
       raise ActionController::BadRequest, "bonus_throw_pins must be present" if params[:bonus_throw_pins].nil?
       raise ActionController::BadRequest, "bonus_throw_pins value must be between 0 to 10" unless (0..10).include?(params[:bonus_throw_pins])
@@ -57,6 +63,7 @@ module FrameValidator
       raise ActionController::BadRequest, "pins_knocked_down_by_second_throw should not be present" if params[:pins_knocked_down_by_second_throw].present?
     end
 
+    # Validates frame existence and parameters based on the throw number.
     def validate_frame
       return if params[:throw].blank?
 
@@ -69,25 +76,29 @@ module FrameValidator
       end
     end
 
+    # Validates parameters for the first throw frame.
     def validate_first_throw_frame
       raise ActionController::BadRequest, "pins_knocked_down_by_first_throw is already present" unless @frame.pins_knocked_down_by_first_throw.nil?
       validate_previous_frame if @frame.frame_number != 1
     end
 
+    # Validates parameters for the second throw frame.
     def validate_second_throw_frame
       raise ActionController::BadRequest, "pins_knocked_down_by_second_throw is already present" unless @frame.pins_knocked_down_by_second_throw.nil?
-      raise ActionController::BadRequest, "frame status is #{@frame.status}: So this operation is not allowed" unless @frame.open?
+      raise ActionController::BadRequest, "frame status is #{frame.status}: So this operation is not allowed" unless @frame.open?
       return if @frame.frame_number == 10
 
       remaining_pins = 10 - @frame.pins_knocked_down_by_first_throw
       raise ActionController::BadRequest, "pins_knocked_down_by_second_throw value must be between 0 to #{remaining_pins}" unless (0..remaining_pins).include?(params[:pins_knocked_down_by_second_throw])
     end
 
+    # Validates parameters for the bonus throw frame.
     def validate_bonus_throw_frame
       raise ActionController::BadRequest, "bonus_throw_pins is already present" unless @frame.bonus_throw_pins.nil?
-      raise ActionController::BadRequest, "frame status is #{@frame.status}: So this operation is not allowed" unless @frame.open?
+      raise ActionController::BadRequest, "frame status is #{frame.status}: So this operation is not allowed" unless @frame.open?
     end
 
+    # Validates completion of the previous frame.
     def validate_previous_frame
       prev_frame_number = @frame.frame_number - 1
       prev_frames = @game.frames.where(player_id: @frame.player_id, frame_number: prev_frame_number)&.first

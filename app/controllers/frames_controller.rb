@@ -7,6 +7,7 @@ class FramesController < ApplicationController
   before_action :validate_params
 
   # PATCH/ /frames/1
+  # Updates a frame with the specified throw information.
   def update
     if @frame.update(frame_params)
       render :show, status: :ok
@@ -17,18 +18,22 @@ class FramesController < ApplicationController
 
   private
 
+  # Sets @game instance variable with the game corresponding to the provided game_id.
   def set_game
     @game = Game.find(params[:game_id])
   end
 
+  # Sets @frame instance variable with the frame corresponding to the provided ID within the game.
   def set_frame
     @frame = @game.frames.find(params[:id])
   end
 
+  # Defines permitted parameters for frame update based on the throw number.
   def frame_params
     params.require(:frame).permit(permitted_attribute_for_update)
   end
 
+  # Determines permitted attributes for frame update based on the throw number.
   def permitted_attribute_for_update
     case params[:throw]
     when 1
