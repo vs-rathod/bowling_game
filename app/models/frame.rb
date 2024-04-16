@@ -42,12 +42,14 @@ class Frame < ApplicationRecord
 
   # Sets bonus throw pins for the previous frame if applicable
   def set_bonus_throw_pins
-    prev_frame = last_frame
+    prev_frame = last_frame(frame_number - 1)
     return if prev_frame.nil?
 
     bonus_point = 0
     if prev_frame.strike
       bonus_point += self.pins_knocked_down_by_first_throw.to_i + self.pins_knocked_down_by_second_throw.to_i
+      # If Player hits last two stroke to strike, So update bonus_pin_point for previous of prev_frame
+      check_prev_of_prev_frame(prev_frame.frame_number) if self.pins_knocked_down_by_second_throw.nil?
     elsif prev_frame.spare
       bonus_point += self.pins_knocked_down_by_first_throw.to_i
     else
@@ -58,10 +60,19 @@ class Frame < ApplicationRecord
   end
 
   # Retrieves the previous frame
-  def last_frame
-    return nil if frame_number == 1
+  def last_frame(frame_no)
+    return nil if frame_no == 0
 
-    Frame.find_by(game_id: game_id, player_id: player_id, frame_number: frame_number - 1)
+    Frame.find_by(game_id: game_id, player_id: player_id, frame_number: frame_no)
+  end
+
+  # - Updates the bonus_throw_pins of the previous-previous frame if conditions are met.
+  def check_prev_of_prev_frame(prev_frame_number)
+    prev_prev_frame = last_frame(prev_frame_number - 1)
+    return if prev_prev_frame.nil? || !prev_prev_frame.strike
+
+    bonus_point = prev_prev_frame.bonus_throw_pins.to_i + self.pins_knocked_down_by_first_throw.to_i
+    prev_prev_frame.update_columns(bonus_throw_pins: bonus_point)
   end
 
   # Updates the status of the frame
