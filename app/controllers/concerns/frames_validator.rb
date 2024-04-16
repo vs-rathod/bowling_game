@@ -1,4 +1,5 @@
-module FrameValidator
+# FrameValidator: Controller/Request-Parameters Level Validation
+module FramesValidator
   extend ActiveSupport::Concern
 
   included do

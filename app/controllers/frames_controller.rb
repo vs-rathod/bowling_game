@@ -1,6 +1,6 @@
 class FramesController < ApplicationController
   # FrameValidator used to validate all bad_request conditions
-  include FrameValidator
+  include FramesValidator
 
   before_action :set_game
   before_action :set_frame

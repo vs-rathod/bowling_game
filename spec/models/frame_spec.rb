@@ -102,12 +102,12 @@ RSpec.describe Frame, type: :model do
     end
 
     it 'returns true if spare is true' do
-      frame.update(pins_knocked_down_by_first_throw: 5, pins_knocked_down_by_second_throw: 5)
+      frame.update(status: 'open', pins_knocked_down_by_first_throw: 5, pins_knocked_down_by_second_throw: 5)
       expect(frame.send(:can_closed?)).to be_truthy
     end
 
     it 'returns true if frame number is not 10 and pins_knocked_down_by_second_throw is present' do
-      frame.update(pins_knocked_down_by_second_throw: 3)
+      frame.update(status: 'open', pins_knocked_down_by_second_throw: 3)
       expect(frame.send(:can_closed?)).to be_truthy
     end
 
