@@ -13,6 +13,8 @@ class Frame < ApplicationRecord
   before_update :set_strike, :set_spare, :set_bonus_throw_pins, :update_frame_status
   after_update :update_game_status, if: -> { frame_number == 10 && completed? }
 
+  validate :pins_knocked_down_by_first_throw_within_range, :pins_knocked_down_by_second_throw_within_range, :bonus_throw_pins_within_range
+
   # Calculates the total score for the frame
   def total_score
     return 0 if pins_knocked_down_by_first_throw.nil?
@@ -25,6 +27,37 @@ class Frame < ApplicationRecord
   end
 
   private
+
+  # Validates that the pins_knocked_down_by_first_throw attribute is within the range of 0 to 10.
+  def pins_knocked_down_by_first_throw_within_range
+    return if pins_knocked_down_by_first_throw.nil?
+
+    unless (0..10).include?(pins_knocked_down_by_first_throw)
+      errors.add(:pins_knocked_down_by_first_throw, "value must be between 0 to 10")
+      raise ActiveRecord::RecordInvalid.new(self)
+    end
+  end
+
+  # Validates that the pins_knocked_down_by_first_throw + pins_knocked_down_by_second_throw  attribute is within the range of 0 to 10.
+  def pins_knocked_down_by_second_throw_within_range
+    return if pins_knocked_down_by_first_throw.nil? || pins_knocked_down_by_second_throw.nil? || frame_number == 10
+
+    remaing_pins = 10 - pins_knocked_down_by_first_throw
+    unless (0..remaing_pins).include?(pins_knocked_down_by_second_throw)
+      errors.add(:pins_knocked_down_by_second_throw, "value must be between 0 to #{remaing_pins}")
+      raise ActiveRecord::RecordInvalid.new(self)
+    end
+  end
+
+  # Validates that the bonus_throw_pins attribute is within the range of 0 to 10.
+  def bonus_throw_pins_within_range
+    return if bonus_throw_pins.nil? || frame_number != 10
+
+    unless (0..10).include?(bonus_throw_pins)
+      errors.add(:bonus_throw_pins, "value must be between 0 to 10")
+      raise ActiveRecord::RecordInvalid.new(self)
+    end
+  end
 
   # Sets the strike flag if all pins are knocked down in the first throw
   def set_strike

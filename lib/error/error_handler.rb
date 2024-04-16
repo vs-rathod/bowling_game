@@ -14,6 +14,16 @@ module Error::ErrorHandler
       rescue_from ActionController::BadRequest do |e|
         respond('bad_request', 400, e.to_s)
       end
+
+      # Rescue from ActionController::ParameterMissing exception and respond with a 400 status code.
+      rescue_from ActionController::ParameterMissing do |e|
+        respond('bad_request', 400, e.to_s)
+      end
+
+      # Rescue from ActiveRecord::RecordInvalid exception and respond with a 422 status code.
+      rescue_from ActiveRecord::RecordInvalid do |e|
+        respond('unprocessable_entity', 422, e.to_s)
+      end
     end
   end
 

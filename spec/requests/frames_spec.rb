@@ -18,7 +18,7 @@ RSpec.describe FramesController, type: :controller do
     context 'with invalid parameters' do
       it 'renders error response' do
         patch :update, params: { game_id: game.id, id: frame.id, player_id: player.id, pins_knocked_down_by_first_throw: 15, throw: 1 }, as: :json, format: :json
-        expect(response).to have_http_status(:bad_request)
+        expect(response).to have_http_status(:unprocessable_entity)
       end
     end
   end
